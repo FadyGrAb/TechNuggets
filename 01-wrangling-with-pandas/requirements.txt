@@ -8,7 +8,6 @@ Babel==2.11.0
 backcall==0.2.0
 beautifulsoup4==4.11.1
 bleach==5.0.1
-certifi @ file:///C:/b/abs_85o_6fm0se/croot/certifi_1671487778835/work/certifi
 cffi==1.15.1
 charset-normalizer==3.0.1
 colorama==0.4.6

@@ -3,7 +3,8 @@ import csv
 import pathlib
 import random
 
-def submit_manually(item: str, effect: int) -> str:
+def submit_manually(item: str) -> str:
+    effect = random.randint(0, 4)
     if effect == 0:
         return item
     elif effect == 1:
@@ -13,7 +14,7 @@ def submit_manually(item: str, effect: int) -> str:
     else:
         return None
 
-csv_datatset = pathlib.Path("store_data_20230116.csv")
+csv_datatset = pathlib.Path("./store_data_20230116.csv")
 csv_header = ["Tran ID", "Cat", "Item", "Qty", "Unit Price"]
 
 with csv_datatset.open(mode="w") as csv_file:
@@ -45,9 +46,10 @@ with csv_datatset.open(mode="w") as csv_file:
             unit_price = prices[item]
 
             if manual:
-                effect = random.randint(0, 4)
-                cat = submit_manually(cat, effect)
-                item = submit_manually(item, effect)
+                cat = submit_manually(cat)
+                item = submit_manually(item)
+                qty = qty if random.randint(1, 10) != 10 else None
+                unit_price = unit_price if random.randint(1, 10) != 10 else None
 
             data = {
                 "Tran ID": trans_id,

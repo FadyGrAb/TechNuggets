@@ -1,17 +1,19 @@
 altgraph==0.17.3
 astroid==2.4.2
-certifi @ file:///C:/b/abs_85o_6fm0se/croot/certifi_1671487778835/work/certifi
+autopep8==2.0.1
 colorama==0.4.3
 future==0.18.3
 isort==5.5.4
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
 pefile==2022.5.30
+pycodestyle==2.10.0
 pyinstaller==5.7.0
 pyinstaller-hooks-contrib==2022.15
 pylint==2.6.0
 pywin32-ctypes==0.2.0
 six==1.15.0
 toml==0.10.1
+tomli==2.0.1
 wincertstore==0.2
 wrapt==1.12.1

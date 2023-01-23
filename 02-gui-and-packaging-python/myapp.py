@@ -10,73 +10,23 @@ from killer_script import get_result
 
 
 class MyApp(Tk):
-    def __init__(self, width=600, height=170):
+    def __init__(self, width=600, height=145, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.width = width
         self.height = height
+
         self.create_gui()
 
     def create_gui(self):
-        # Main window
-        x, y = self.get_center_position()
-
-        self.title("My App")
-        self.geometry(f"{self.width}x{self.height}+{x}+{y}")
-
-        # Surveys folder:
-        #################
-        # Tkinter variable that the widgets can use.
-        self.surveys_path = StringVar()
-
-        # A Frame widget to hold the button and label
-        frame_surveys = Frame(self)
-        frame_surveys.pack(fill="both", expand=True)
-
-        # Create the button widget.
-        self.button_surveys = Button(
-            # Put the button inside the previously created frame.
-            frame_surveys,
-            text="Surveys Folder",
-            width=30,
-            # The function/method that the button executes.
-            # It's a lambda funtion because we need to pass parameters
-            # to the method. I that wasn't the case, we would have referenced
-            # the method directly without lambda.
-            command=lambda: self.get_directory(self.surveys_path)
-        )
-        # Place the button widget.
-        self.button_surveys.pack(side="left", pady=10, padx=5)
-
-        label_surveys = Label(
-            frame_surveys,
-            textvariable=self.surveys_path,
-            background="white",
-        )
-        label_surveys.pack(side="left", expand=True)
-
-        # Results csv file saving path:
-        ###############################
-        self.results_path = StringVar()
-
-        frame_results = Frame(self)
-        frame_results.pack(fill="both", expand=True)
-
-        self.button_results = Button(
-            frame_results,
-            text="Results file path",
-            width=30,
-            command=lambda: self.get_directory(self.results_path)
-        )
-        self.button_results.pack(side="left", pady=10, padx=5)
-
-        label_results = Label(
-            frame_results,
-            textvariable=self.results_path,
-            background="white"
-        )
-        label_results.pack(side="left", expand=True)
+        self.initiate_main_window()
+        # Surveys folder
+        self.surveys_path, self.button_surveys = self.create_gui_container(
+            "Surveys Folder")
+        # Results saving path
+        self.results_path, self.button_results = self.create_gui_container(
+            "Results File Path")
 
         # Go button:
-        ############
         # This button executes our business logic.
         self.button_go = Button(
             self,
@@ -85,7 +35,44 @@ class MyApp(Tk):
             # See! No lambda as we don't need to pass parameters to the method.
             command=self.go
         )
-        self.button_go.pack(pady=10)
+        self.button_go.pack(pady=20)
+
+    def initiate_main_window(self):
+        x, y = self.get_center_position()
+
+        self.title("My App")
+        self.geometry(f"{self.width}x{self.height}+{x}+{y}")
+
+    def create_gui_container(self, button_text):
+        path = StringVar()
+
+        # A Frame widget to hold the button and label
+        frame = Frame(self)
+        frame.pack(fill="x", expand=True, side="top", pady=5)
+
+        # Create the button widget.
+        button = Button(
+            # Put the button inside the previously created frame.
+            frame,
+            text=button_text,
+            width=20,
+            # The function/method that the button executes.
+            # It's a lambda funtion because we need to pass parameters
+            # to the method. I that wasn't the case, we would have referenced
+            # the method directly without lambda.
+            command=lambda: self.get_directory(path)
+        )
+        # Place the button widget.
+        button.pack(side="left", padx=5)
+
+        label = Label(
+            frame,
+            textvariable=path,
+            background="white",
+        )
+        label.pack(side="left", expand=True, fill="x", padx=5)
+
+        return path, button
 
     def get_center_position(self):
         x_center = (self.winfo_screenwidth() - self.width) / 2
@@ -129,13 +116,13 @@ class MyApp(Tk):
         images = [secrets.token_urlsafe(5) + ".jpg" for _ in range(20)]
 
         # The results csv file saving directory.
-        results_file = pathlib.Path(self.results_path) / "results.csv"
+        results_file = pathlib.Path(self.results_path.get()) / "results.csv"
 
         # Write a csv file with DictWriter class from the csv module.
         with results_file.open(mode="w") as csv_results_file:
             header = ["filename", "q1", "q2", "q3", "q4", "q5"]
             csv_dictwriter = csv.DictWriter(
-                csv_results_file, fieldnames=header)
+                csv_results_file, fieldnames=header, lineterminator="\n")
             csv_dictwriter.writeheader()
 
             for idx, image in enumerate(images):
@@ -156,27 +143,30 @@ class MyApp(Tk):
         self.change_buttons_state("enabled")
 
     def show_progressbar(self):
-        # Progress bar
-        self.progress_value = StringVar()
 
-        self.progress_bar = Progressbar(
-            self,
-            orient="horizontal",
-            length=100,
-            mode='determinate'
-        )
-        self.progress_bar.pack(fill="both", expand=True, padx=5)
+        try:
+            self.progress_bar["value"] = 0
+            self.progress_value.set("")
+        except:
+            self.progress_value = StringVar()
+            self.progress_bar = Progressbar(
+                self,
+                orient="horizontal",
+                length=100,
+                mode='determinate',
+            )
+            self.progress_bar.pack(fill="both", expand=True, padx=5)
 
-        self.label_progress_bar = Label(
-            self,
-            textvariable=self.progress_value,
-            anchor="center",
-        )
-        self.label_progress_bar.pack(fill="both", expand=True)
+            self.label_progress_bar = Label(
+                self,
+                textvariable=self.progress_value,
+                anchor="center",
+            )
+            self.label_progress_bar.pack(fill="both", expand=True)
 
     def show_log_listbox(self):
         # Make the main window a little taller.
-        self.geometry("{}x{}".format(self.width, self.height + 230))
+        self.geometry(f"{self.width}x{self.height + 220}")
 
         # Create a listbox as a log container.
         try:
@@ -192,7 +182,7 @@ class MyApp(Tk):
         self.button_go["state"] = state
 
     def write_log(self, index, message):
-        entry = f"SUCCESS: {message}"
+        entry = f"[{index + 1}] SUCCESS: {message}"
         self.listbox_log.insert(index, entry)
         # Always make the new entry visible in the listbox
         self.listbox_log.see(index)

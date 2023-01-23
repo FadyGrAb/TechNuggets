@@ -1,3 +1,5 @@
 venv_*
-__pycahe__
+__pycache__
 vscode
+**/__pycache__
+02*/results.csv

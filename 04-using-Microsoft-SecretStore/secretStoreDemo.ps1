@@ -47,12 +47,12 @@ $awsSecretAccessKeyEncrypted = ConvertFrom-SecureString $awsSecretAccessKey -Sec
 Write-Host "Encrypted AWS_ACCESS_KEY_ID: $awsSecretAccessKeyEncrypted"
 
 # Store the encrypted credentials in the AWS vault
-Set-Secret -Vault AWS -Name AWS_ACCESS_KEY_ID -Secret $awsAccessKeyIDEncrypted
-Set-Secret -Vault AWS -Name AWS_SECRET_ACCESS_KEY -Secret $awsSecretAccessKeyEncrypted
+Set-Secret -Vault AWSVault -Name AWS_ACCESS_KEY_ID -Secret $awsAccessKeyIDEncrypted
+Set-Secret -Vault AWSVault -Name AWS_SECRET_ACCESS_KEY -Secret $awsSecretAccessKeyEncrypted
 
 # Retreive the secrets back from the AWS vault
-$awsAccessKeyIDVault = Get-Secret -Vault AWS -Name AWS_ACCESS_KEY_ID -AsPlainText
-$awsSecretAccessKeyVault = Get-Secret -Vault AWS -Name AWS_SECRET_ACCESS_KEY -AsPlainText
+$awsAccessKeyIDVault = Get-Secret -Vault AWSVault -Name AWS_ACCESS_KEY_ID -AsPlainText
+$awsSecretAccessKeyVault = Get-Secret -Vault AWSVault -Name AWS_SECRET_ACCESS_KEY -AsPlainText
 
 Write-Host "ENCRYPTED AWS ACCESS KEY ID: $awsAccessKeyIDVault"
 Write-Host "ENCRYPTED AWS SECRET ACCESS KEY: $awsSecretAccessKeyVault"
@@ -70,7 +70,7 @@ Write-Host "AWS_ACCESS_KEY_ID: $awsAccessKeyIDDecrypted`nAWS_SECRET_ACCESS_KEY: 
 
 function Get-AWSAccessKeyID {
     $encryptionKey = Get-Secret -Vault MyVault -Name AWS_ENCRYPTION_KEY
-    $awsAccessKeyIDVault = Get-Secret -Vault AWS -Name AWS_ACCESS_KEY_ID -AsPlainText
+    $awsAccessKeyIDVault = Get-Secret -Vault AWSVault -Name AWS_ACCESS_KEY_ID -AsPlainText
 
     $awsAccessKeyIDSecure = ConvertTo-SecureString $awsAccessKeyIDVault -SecureKey $encryptionKey
     $awsAccessKeyIDDecrypted = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($awsAccessKeyIDSecure)
@@ -80,7 +80,7 @@ function Get-AWSAccessKeyID {
 
 function Get-AWSSecretAccessKey {
     $encryptionKey = Get-Secret -Vault MyVault -Name AWS_ENCRYPTION_KEY
-    $awsSecretAccessKeyVault = Get-Secret -Vault AWS -Name AWS_SECRET_ACCESS_KEY -AsPlainText
+    $awsSecretAccessKeyVault = Get-Secret -Vault AWSVault -Name AWS_SECRET_ACCESS_KEY -AsPlainText
 
     $awsSecretAccessKeySecure = ConvertTo-SecureString $awsSecretAccessKeyVault -SecureKey $encryptionKey
     $awsSecretAccessKeyDecrypted = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($awsSecretAccessKeySecure)

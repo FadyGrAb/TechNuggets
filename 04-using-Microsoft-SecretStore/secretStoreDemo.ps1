@@ -72,7 +72,7 @@ function Get-AWSAccessKeyID {
     $encryptionKey = Get-Secret -Vault MyVault -Name AWS_ENCRYPTION_KEY
     $awsAccessKeyIDVault = Get-Secret -Vault AWS -Name AWS_ACCESS_KEY_ID -AsPlainText
 
-    $awsAccessKeyIDSecure = ConvertTo-SecureString $awsAccessKeyIDVault -Key $encryptionKey
+    $awsAccessKeyIDSecure = ConvertTo-SecureString $awsAccessKeyIDVault -SecureKey $encryptionKey
     $awsAccessKeyIDDecrypted = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($awsAccessKeyIDSecure)
     $awsAccessKeyIDDecrypted = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($awsAccessKeyIDDecrypted)
     return $awsAccessKeyIDDecrypted
@@ -82,7 +82,7 @@ function Get-AWSSecretAccessKey {
     $encryptionKey = Get-Secret -Vault MyVault -Name AWS_ENCRYPTION_KEY
     $awsSecretAccessKeyVault = Get-Secret -Vault AWS -Name AWS_SECRET_ACCESS_KEY -AsPlainText
 
-    $awsSecretAccessKeySecure = ConvertTo-SecureString $awsSecretAccessKeyVault -Key $encryptionKey
+    $awsSecretAccessKeySecure = ConvertTo-SecureString $awsSecretAccessKeyVault -SecureKey $encryptionKey
     $awsSecretAccessKeyDecrypted = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($awsSecretAccessKeySecure)
     $awsSecretAccessKeyDecrypted = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($awsSecretAccessKeyDecrypted)
     return $awsSecretAccessKeyDecrypted

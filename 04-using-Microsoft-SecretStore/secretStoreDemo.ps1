@@ -21,13 +21,9 @@ Get-SecretVault
 
 # Generate a random encryption key and store in the default vault
 # Create a set of allowed characters.
-$chars = ("a".."z") + ("A".."Z") + (0..9) + "@#%[]{}=+".ToCharArray()
-# $myKey = [Byte[]]::new(0)
+$chars = ("a".."z") + ("A".."Z") + (0..9) + "@#%[]{}=+"
 $mykey = ""
-# (1..32) | ForEach-Object { $myKey += [Byte]($chars | Get-Random) }
-# (1..32) | ForEach-Object { $myKey += [Byte]($chars | Get-Random) }
 (1..16) | ForEach-Object { $myKey += $chars | Get-Random }
-
 
 Set-Secret -Vault MyVault -Name AWS_ENCRYPTION_KEY -Secret $myKey
 # Sanity check

@@ -1,0 +1,13 @@
+.notifications-wrapper {
+    display: flex;
+    margin: 5% auto 0 auto;
+    width: 50%;
+    font-size: xx-large;
+}
+.toxicity-item {
+    background-color: rgb(114, 0, 0);
+    color: white;
+    margin: auto 5px auto 5px;
+    padding: 0 10px 0 10px;
+    border-radius: 5px;
+}
